@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Ron</title>
+</head>
+<body style="background-color: green;">
+    <header>
+        <h1>Bienvenido a la página de Ron</h1>
+    </header>
+    <main>
+        <p>Esta es una página dedicada a Ron.</p>
+    </main>
+    <div style="position: absolute; top: 50%; left: 45%; width: 10%; height: 2px; background-color: yellow; transform: translateY(-50%);"></div>
+    <div id="center-scoreboard" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 36px; color: white; text-align: center;">
+        Marcador
+    </div>
+    <div id="apple-counter" style="position: fixed; top: 10%; left: 50%; transform: translateX(-50%); font-size: 24px; color: white; text-align: center;">
+        Manzanas: 0
+    </div>
+    <script>
+        let appleCount = 0;
+
+        function rainApples() {
+            setInterval(() => {
+                const apple = document.createElement('div');
+                apple.style.position = 'absolute';
+                apple.style.width = '20px';
+                apple.style.height = '20px';
+                apple.style.backgroundColor = 'red';
+                apple.style.borderRadius = '50%';
+                apple.style.left = `${Math.random() * window.innerWidth}px`;
+                apple.style.top = `-20px`;
+
+                document.body.appendChild(apple);
+
+                const fallInterval = setInterval(() => {
+                    const currentTop = parseInt(apple.style.top);
+                    apple.style.top = `${currentTop + 5}px`;
+
+                    const yellowLine = document.querySelector('div[style*="background-color: yellow;"]');
+                    if (checkCollision(apple, yellowLine)) {
+                        apple.remove();
+                        clearInterval(fallInterval);
+                        appleCount++;
+                        document.getElementById('apple-counter').textContent = `Manzanas: ${appleCount}`;
+                        if (appleCount === 30) {
+                            rainConfetti('random');
+                        }
+                    }
+
+                    if (currentTop > window.innerHeight) {
+                        apple.remove();
+                        clearInterval(fallInterval);
+                    }
+                }, 20);
+            }, 500); // Apples fall every 500ms
+        }
+
+        function checkCollision(object1, object2) {
+            const rect1 = object1.getBoundingClientRect();
+            const rect2 = object2.getBoundingClientRect();
+
+            return !(
+                rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom
+            );
+        }
+
+        function updateScores() {
+            // Removed dynamic score update for the center scoreboard
+        }
+
+        function rainConfetti(color) {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = color === 'random' ? getRandomColor() : color;
+                confetti.style.left = `${Math.random() * window.innerWidth}px`;
+                confetti.style.top = `-10px`;
+                confetti.style.opacity = Math.random();
+
+                document.body.appendChild(confetti);
+
+                const fallInterval = setInterval(() => {
+                    const currentTop = parseInt(confetti.style.top);
+                    confetti.style.top = `${currentTop + 5}px`;
+
+                    if (currentTop > window.innerHeight) {
+                        confetti.remove();
+                        clearInterval(fallInterval);
+                    }
+                }, 20);
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ['red', 'blue', 'yellow', 'green', 'purple', 'orange'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            rainApples();
+            const line = document.querySelector('div[style*="background-color: black;"]');
+            let lineTop = 50; // Initial vertical position in percentage
+            let lineLeft = 45; // Initial horizontal position in percentage
+
+            document.addEventListener('keydown', (event) => {
+                const step = 2; // Movement step in percentage
+
+                // Prevent default behavior for arrow keys
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                    event.preventDefault();
+                }
+
+                if (event.key === 'ArrowUp') {
+                    lineTop = Math.max(0, lineTop - step); // Prevent moving out of bounds
+                } else if (event.key === 'ArrowDown') {
+                    lineTop = Math.min(100, lineTop + step); // Prevent moving out of bounds
+                } else if (event.key === 'ArrowLeft') {
+                    lineLeft = Math.max(0, lineLeft - step); // Prevent moving out of bounds
+                } else if (event.key === 'ArrowRight') {
+                    lineLeft = Math.min(90, lineLeft + step); // Prevent moving out of bounds
+                }
+                line.style.top = `${lineTop}%`;
+                line.style.left = `${lineLeft}%`;
+            });
+
+            let scorePersona1 = 0;
+            let scorePersona2 = 0;
+
+            // Example of updating scores
+            setInterval(() => {
+                scorePersona1++;
+                scorePersona2++;
+                updateScores();
+            }, 1000); // Increment scores every second for demonstration
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const line = document.querySelector('div[style*="background-color: yellow;"]');
+            let lineTop = 50; // Initial vertical position in percentage
+            let lineLeft = 45; // Initial horizontal position in percentage
+
+            document.addEventListener('keydown', (event) => {
+                const step = 2; // Movement step in percentage
+
+                // Prevent default behavior for arrow keys
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                    event.preventDefault();
+                }
+
+                if (event.key === 'ArrowUp') {
+                    lineTop = Math.max(0, lineTop - step); // Prevent moving out of bounds
+                } else if (event.key === 'ArrowDown') {
+                    lineTop = Math.min(100, lineTop + step); // Prevent moving out of bounds
+                } else if (event.key === 'ArrowLeft') {
+                    lineLeft = Math.max(0, lineLeft - step); // Prevent moving out of bounds
+                } else if (event.key === 'ArrowRight') {
+                    lineLeft = Math.min(90, lineLeft + step); // Prevent moving out of bounds
+                }
+                line.style.top = `${lineTop}%`;
+                line.style.left = `${lineLeft}%`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campo de Fútbol</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: green;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .field {
+            position: relative;
+            width: 80%; /* Adjusted for better proportions */
+            height: 50%; /* Adjusted for better proportions */
+            background: #006400;
+            border: 5px solid white;
+        }
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20%;
+            height: 20%;
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .center-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: white;
+            transform: translateX(-50%);
+        }
+        .goal-area {
+            position: absolute;
+            width: 10%; /* Adjusted for horizontal orientation */
+            height: 40%; /* Adjusted for horizontal orientation */
+            border: 2px solid white;
+        }
+        .goal-area.top {
+            left: 0; /* Adjusted for horizontal orientation */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .goal-area.bottom {
+            right: 0; /* Adjusted for horizontal orientation */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .penalty-area {
+            position: absolute;
+            width: 20%; /* Adjusted for horizontal orientation */
+            height: 60%; /* Adjusted for horizontal orientation */
+            border: 2px solid white;
+        }
+        .penalty-area.top {
+            left: 0; /* Adjusted for horizontal orientation */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .penalty-area.bottom {
+            right: 0; /* Adjusted for horizontal orientation */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .penalty-spot {
+            position: absolute;
+            width: 1%;
+            height: 1%;
+            background: white;
+            border-radius: 50%;
+        }
+        .penalty-spot.top {
+            left: 15%; /* Adjusted for horizontal orientation */
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .penalty-spot.bottom {
+            right: 15%; /* Adjusted for horizontal orientation */
+            top: 50%;
+            transform: translate(50%, -50%);
+        }
+        .corner-arc {
+            position: absolute;
+            width: 5%;
+            height: 5%;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+        .corner-arc.top-left {
+            top: 0;
+            left: 0;
+        }
+        .corner-arc.top-right {
+            top: 0;
+            right: 0;
+        }
+        .corner-arc.bottom-left {
+            bottom: 0;
+            left: 0;
+        }
+        .corner-arc.bottom-right {
+            bottom: 0;
+            right: 0;
+        }
+        .red-square {
+            position: absolute;
+            width: 5%;
+            height: 5%;
+            background: red;
+            top: 50%;
+            left: 2%;
+            transform: translateY(-50%);
+        }
+        .blue-square {
+            position: absolute;
+            width: 5%;
+            height: 5%;
+            background: blue;
+            top: 50%;
+            right: 2%;
+            transform: translateY(-50%);
+        }
+        .center-spot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2%;
+            height: 2%;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .goal-line {
+            position: absolute;
+            width: 2px;
+            height: 40%; /* Matches the height of the goal area */
+            background: black;
+        }
+        .goal-line.left {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .goal-line.right {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .ball {
+            position: absolute;
+            width: 3%;
+            height: 3%;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .goal-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: yellow;
+            font-weight: bold;
+            display: none;
+        }
+        .scoreboard {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        .victory-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: yellow;
+            font-weight: bold;
+            display: none;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: yellow;
+            animation: fall 2s linear infinite;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        .timer {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        .play-again-button {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            padding: 10px 20px;
+            background: yellow;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+        .play-again-button:hover {
+            background: orange;
+        }
+        .difficulty-buttons {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+        .difficulty-buttons button {
+            font-size: 1.2rem;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background: yellow;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .difficulty-buttons button:hover {
+            background: orange;
+        }
+    </style>
+</head>
+<body>
+    <div class="scoreboard" id="scoreboard">Red: 0 - Blue: 0</div>
+    <div class="timer" id="timer">30</div>
+    <div class="field">
+        <div class="center-circle"></div>
+        <div class="center-line"></div>
+        <div class="goal-area top"></div>
+        <div class="goal-area bottom"></div>
+        <div class="penalty-area top"></div>
+        <div class="penalty-area bottom"></div>
+        <div class="penalty-spot top"></div>
+        <div class="penalty-spot bottom"></div>
+        <div class="corner-arc top-left"></div>
+        <div class="corner-arc top-right"></div>
+        <div class="corner-arc bottom-left"></div>
+        <div class="corner-arc bottom-right"></div>
+        <div class="red-square" id="redSquare"></div>
+        <div class="blue-square" id="blueSquare"></div>
+        <div class="center-spot"></div>
+        <div class="goal-line left"></div>
+        <div class="goal-line right"></div>
+        <div class="ball" id="ball"></div>
+        <div class="goal-message" id="goalMessage">GOL</div>
+        <div class="victory-message" id="victoryMessage">VICTORY</div>
+        <button class="play-again-button" id="playAgainButton">Play Again</button>
+        <div class="difficulty-buttons" id="difficultyButtons">
+            <button id="easyButton">Fácil</button>
+            <button id="mediumButton">Medio</button>
+            <button id="hardButton">Difícil</button>
+        </div>
+    </div>
+    <script>
+        const redSquare = document.getElementById('redSquare');
+        const blueSquare = document.getElementById('blueSquare');
+        const ball = document.getElementById('ball');
+        const goalMessage = document.getElementById('goalMessage');
+        const scoreboard = document.getElementById('scoreboard');
+        const victoryMessage = document.getElementById('victoryMessage');
+        const timerElement = document.getElementById('timer');
+        const playAgainButton = document.getElementById('playAgainButton');
+        const difficultyButtons = document.getElementById('difficultyButtons');
+        const easyButton = document.getElementById('easyButton');
+        const mediumButton = document.getElementById('mediumButton');
+        const hardButton = document.getElementById('hardButton');
+
+        let redSquarePosition = { top: 50, left: 2 };
+        let blueSquarePosition = { top: 50, left: 98 };
+        let ballPosition = { top: 50, left: 50 };
+        let ballCarriedBy = null;
+        let redScore = 0;
+        let blueScore = 0;
+        let timeLeft = 30; // 30 seconds countdown
+        let gameEnded = false;
+
+        const step = 0.2; // Reduced step for slower movement
+        let aiStep = 0.1; // AI movement step (default to easy)
+        const keysPressed = {};
+
+        function checkCollision(squarePosition) {
+            const squareRect = {
+                top: squarePosition.top,
+                left: squarePosition.left,
+                right: squarePosition.left + 5, // 5% width
+                bottom: squarePosition.top + 5, // 5% height
+            };
+            const ballRect = {
+                top: ballPosition.top,
+                left: ballPosition.left,
+                right: ballPosition.left + 3, // 3% width
+                bottom: ballPosition.top + 3, // 3% height
+            };
+
+            return (
+                squareRect.left < ballRect.right &&
+                squareRect.right > ballRect.left &&
+                squareRect.top < ballRect.bottom &&
+                squareRect.bottom > ballRect.top
+            );
+        }
+
+        function checkSquareCollision() {
+            const redSquareRect = {
+                top: redSquarePosition.top,
+                left: redSquarePosition.left,
+                right: redSquarePosition.left + 5, // 5% width
+                bottom: redSquarePosition.top + 5, // 5% height
+            };
+            const blueSquareRect = {
+                top: blueSquarePosition.top,
+                left: blueSquarePosition.left,
+                right: blueSquarePosition.left + 5, // 5% width
+                bottom: blueSquarePosition.top + 5, // 5% height
+            };
+
+            return (
+                redSquareRect.left < blueSquareRect.right &&
+                redSquareRect.right > blueSquareRect.left &&
+                redSquareRect.top < blueSquareRect.bottom &&
+                redSquareRect.bottom > blueSquareRect.top
+            );
+        }
+
+        function checkGoal() {
+            if (ballPosition.left <= 0) {
+                blueScore++;
+                updateScoreboard();
+                resetPositions();
+            } else if (ballPosition.left + 3 >= 100) {
+                redScore++;
+                updateScoreboard();
+                resetPositions();
+            }
+            checkVictory();
+        }
+
+        function updateScoreboard() {
+            scoreboard.textContent = `Red: ${redScore} - Blue: ${blueScore}`;
+        }
+
+        function resetPositions() {
+            goalMessage.style.display = 'block';
+            setTimeout(() => {
+                goalMessage.style.display = 'none';
+            }, 2000); // Hide the message after 2 seconds
+
+            // Reset ball to the center
+            ballPosition = { top: 50, left: 50 };
+            ball.style.top = ballPosition.top + '%';
+            ball.style.left = ballPosition.left + '%';
+
+            // Reset red square to the left line
+            redSquarePosition = { top: 50, left: 2 };
+            redSquare.style.top = redSquarePosition.top + '%';
+            redSquare.style.left = redSquarePosition.left + '%';
+
+            // Reset blue square to the right line
+            blueSquarePosition = { top: 50, left: 98 };
+            blueSquare.style.top = blueSquarePosition.top + '%';
+            blueSquare.style.left = blueSquarePosition.left + '%';
+
+            ballCarriedBy = null; // Reset ball carrier
+        }
+
+        function checkVictory() {
+            if (redScore === 5 || blueScore === 5) {
+                const winnerColor = redScore === 5 ? 'red' : 'blue';
+                endGame(`${winnerColor.toUpperCase()} wins!`, winnerColor);
+            } else if (timeLeft <= 0 && redScore === blueScore) {
+                endGame('EMPATE', 'yellow'); // Display "EMPATE" in yellow
+            }
+        }
+
+        function endGame(message, color) {
+            gameEnded = true;
+            victoryMessage.textContent = message;
+            victoryMessage.style.color = color; // Set the color of the victory message
+            victoryMessage.style.display = 'block';
+            playAgainButton.style.display = 'block';
+            difficultyButtons.style.display = 'block'; // Show difficulty buttons
+            showConfetti();
+        }
+
+        function showConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000); // Remove confetti after 2 seconds
+            }
+        }
+
+        function resetGame() {
+            redScore = 0;
+            blueScore = 0;
+            updateScoreboard();
+            resetPositions();
+            timeLeft = 30; // Reset timer
+            timerElement.textContent = timeLeft;
+            gameEnded = false;
+            victoryMessage.style.display = 'none';
+            playAgainButton.style.display = 'none';
+            difficultyButtons.style.display = 'none'; // Hide difficulty buttons
+            startTimer();
+            moveSquares(); // Re-enable movement
+            moveBlueSquareAI(); // Restart AI movement
+        }
+
+        function moveBlueSquareAI() {
+            if (gameEnded) return;
+
+            // AI logic to aim for the black goal line
+            const goalLineTop = 30; // Top boundary of the black goal line in percentage
+            const goalLineBottom = 70; // Bottom boundary of the black goal line in percentage
+
+            if (ballCarriedBy === 'blue') {
+                // Move the blue square towards the black goal line
+                if (blueSquarePosition.top < goalLineTop) {
+                    blueSquarePosition.top = Math.min(goalLineTop, blueSquarePosition.top + aiStep);
+                } else if (blueSquarePosition.top > goalLineBottom) {
+                    blueSquarePosition.top = Math.max(goalLineBottom, blueSquarePosition.top - aiStep);
+                }
+
+                blueSquarePosition.left = Math.max(0, blueSquarePosition.left - aiStep); // Move left towards the goal
+            } else {
+                // Move the blue square towards the ball
+                if (blueSquarePosition.top < ballPosition.top) {
+                    blueSquarePosition.top = Math.min(100, blueSquarePosition.top + aiStep);
+                } else if (blueSquarePosition.top > ballPosition.top) {
+                    blueSquarePosition.top = Math.max(0, blueSquarePosition.top - aiStep);
+                }
+
+                if (blueSquarePosition.left < ballPosition.left) {
+                    blueSquarePosition.left = Math.min(100, blueSquarePosition.left + aiStep);
+                } else if (blueSquarePosition.left > ballPosition.left) {
+                    blueSquarePosition.left = Math.max(0, blueSquarePosition.left - aiStep);
+                }
+            }
+
+            blueSquare.style.top = blueSquarePosition.top + '%';
+            blueSquare.style.left = blueSquarePosition.left + '%';
+
+            requestAnimationFrame(moveBlueSquareAI);
+        }
+
+        function moveSquares() {
+            if (gameEnded) return;
+
+            if (keysPressed['ArrowUp']) {
+                redSquarePosition.top = Math.max(0, redSquarePosition.top - step);
+            }
+            if (keysPressed['ArrowDown']) {
+                redSquarePosition.top = Math.min(100, redSquarePosition.top + step);
+            }
+            if (keysPressed['ArrowLeft']) {
+                redSquarePosition.left = Math.max(0, redSquarePosition.left - step);
+            }
+            if (keysPressed['ArrowRight']) {
+                redSquarePosition.left = Math.min(100, redSquarePosition.left + step);
+            }
+            redSquare.style.top = redSquarePosition.top + '%';
+            redSquare.style.left = redSquarePosition.left + '%';
+
+            // Check collisions and assign ball
+            if (checkCollision(redSquarePosition)) {
+                ballCarriedBy = 'red';
+            } else if (checkCollision(blueSquarePosition)) {
+                ballCarriedBy = 'blue';
+            }
+
+            // Check if the square without the ball touches the one carrying it
+            if (checkSquareCollision()) {
+                if (ballCarriedBy === 'red') {
+                    ballCarriedBy = 'blue';
+                } else if (ballCarriedBy === 'blue') {
+                    ballCarriedBy = 'red';
+                }
+            }
+
+            // Move the ball with the square carrying it
+            if (ballCarriedBy === 'red') {
+                ballPosition.top = redSquarePosition.top + 1; // Stick closely to the red square
+                ballPosition.left = redSquarePosition.left + 5; // Stick closely to the red square
+            } else if (ballCarriedBy === 'blue') {
+                ballPosition.top = blueSquarePosition.top + 1; // Stick closely to the blue square
+                ballPosition.left = blueSquarePosition.left - 3; // Stick closely to the blue square
+            }
+
+            ball.style.top = ballPosition.top + '%';
+            ball.style.left = ballPosition.left + '%';
+
+            // Check if the ball touches a goal line
+            checkGoal();
+
+            requestAnimationFrame(moveSquares);
+        }
+
+        function startTimer() {
+            const timerInterval = setInterval(() => {
+                if (gameEnded) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    checkVictory(); // Check for a tie when time runs out
+                }
+            }, 1000);
+        }
+
+        // Set AI difficulty and start the game
+        easyButton.addEventListener('click', () => {
+            aiStep = 0.1; // Easy difficulty
+            resetGame();
+        });
+
+        mediumButton.addEventListener('click', () => {
+            aiStep = 0.2; // Medium difficulty
+            resetGame();
+        });
+
+        hardButton.addEventListener('click', () => {
+            aiStep = 0.3; // Hard difficulty
+            resetGame();
+        });
+
+        playAgainButton.addEventListener('click', resetGame);
+
+        document.addEventListener('keydown', (event) => {
+            keysPressed[event.key] = true;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            keysPressed[event.key] = false;
+        });
+
+        startTimer();
+        moveSquares();
+        moveBlueSquareAI(); // Start AI movement for the blue square
+    </script>
+</body>
+</html>

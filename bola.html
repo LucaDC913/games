@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bola Roja</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #fff; /* Fondo blanco */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Apilar elementos verticalmente */
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: red;
+            margin-bottom: 20px; /* Espacio entre el título y la bola */
+        }
+
+        .ball {
+            width: 50px; /* Tamaño reducido */
+            height: 50px; /* Tamaño reducido */
+            background: red;
+            border-radius: 50%; /* Hace que el div sea circular */
+            box-shadow: 0 0 10px 3px red; /* Brillo reducido */
+            z-index: 2;
+        }
+
+        /* Gotas azules */
+        .drop {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: blue;
+            border-radius: 50%;
+            animation: fall 3s linear infinite;
+        }
+
+        /* Bananas */
+        .banana {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background: yellow;
+            border-radius: 10px;
+            transform: rotate(45deg);
+            animation: fall 4s linear infinite;
+        }
+
+        /* Manzanas */
+        .apple {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: red;
+            border-radius: 50%; /* Forma circular */
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Generar múltiples gotas */
+        .drop:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .drop:nth-child(2) { left: 20%; animation-delay: 0.5s; }
+        .drop:nth-child(3) { left: 30%; animation-delay: 1s; }
+        .drop:nth-child(4) { left: 40%; animation-delay: 1.5s; }
+        .drop:nth-child(5) { left: 50%; animation-delay: 2s; }
+        .drop:nth-child(6) { left: 60%; animation-delay: 2.5s; }
+        .drop:nth-child(7) { left: 70%; animation-delay: 3s; }
+        .drop:nth-child(8) { left: 80%; animation-delay: 3.5s; }
+        .drop:nth-child(9) { left: 90%; animation-delay: 4s; }
+
+        /* Generar múltiples bananas */
+        .banana:nth-child(10) { left: 15%; animation-delay: 0.2s; }
+        .banana:nth-child(11) { left: 25%; animation-delay: 0.7s; }
+        .banana:nth-child(12) { left: 35%; animation-delay: 1.2s; }
+        .banana:nth-child(13) { left: 45%; animation-delay: 1.7s; }
+        .banana:nth-child(14) { left: 55%; animation-delay: 2.2s; }
+        .banana:nth-child(15) { left: 65%; animation-delay: 2.7s; }
+        .banana:nth-child(16) { left: 75%; animation-delay: 3.2s; }
+        .banana:nth-child(17) { left: 85%; animation-delay: 3.7s; }
+
+        /* Generar múltiples manzanas */
+        .apple:nth-child(18) { left: 12%; animation-delay: 0.3s; }
+        .apple:nth-child(19) { left: 22%; animation-delay: 0.8s; }
+        .apple:nth-child(20) { left: 32%; animation-delay: 1.3s; }
+        .apple:nth-child(21) { left: 42%; animation-delay: 1.8s; }
+        .apple:nth-child(22) { left: 52%; animation-delay: 2.3s; }
+        .apple:nth-child(23) { left: 62%; animation-delay: 2.8s; }
+        .apple:nth-child(24) { left: 72%; animation-delay: 3.3s; }
+        .apple:nth-child(25) { left: 82%; animation-delay: 3.8s; }
+    </style>
+</head>
+<body>
+    <div class="title">Bola Roja</div>
+    <div class="ball"></div>
+
+    <!-- Gotas azules -->
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+
+    <!-- Bananas -->
+    <div class="banana"></div>
+    <div class="banana"></div>
+    <div class="banana"></div>
+    <div class="banana"></div>
+    <div class="banana"></div>
+    <div class="banana"></div>
+    <div class="banana"></div>
+    <div class="banana"></div>
+
+    <!-- Manzanas -->
+    <div class="apple"></div>
+    <div class="apple"></div>
+    <div class="apple"></div>
+    <div class="apple"></div>
+    <div class="apple"></div>
+    <div class="apple"></div>
+    <div class="apple"></div>
+    <div class="apple"></div>
+</body>
+</html>

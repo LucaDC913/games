@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Página Web</title>
+</head>
+<body style="background-color: green; position: relative; overflow: hidden;">
+    <header>
+        <!-- Removed the h1 element -->
+    </header>
+    <main>
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <figure style="text-align: center; position: relative;">
+                <div style="position: absolute; width: 20px; height: 20px; background-color: red; border-radius: 50%; top: -30px; left: 50%; transform: translateX(-50%);"></div>
+                <img src="persona1.jpg" alt="Persona 1" style="width: 150px; height: auto;">
+                <figcaption>Persona 1</figcaption>
+            </figure>
+            <figure style="text-align: center; position: relative;">
+                <div style="position: absolute; width: 20px; height: 20px; background-color: blue; border-radius: 50%; top: -30px; left: 50%; transform: translateX(-50%);"></div>
+                <img src="persona2.jpg" alt="Persona 2" style="width: 150px; height: auto;">
+                <figcaption>Persona 2</figcaption>
+            </figure>
+        </div>
+        <div id="walls-container"></div>
+        <div id="circles-container">
+            <div style="position: absolute; width: 50px; height: 50px; background-color: yellow; border-radius: 50%; left: 20px; top: 50%; transform: translateY(-50%);"></div>
+            <div style="position: absolute; width: 50px; height: 50px; background-color: blue; border-radius: 50%; right: 20px; top: 50%; transform: translateY(-50%);"></div>
+        </div>
+        <div id="score-container" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; font-size: 24px; color: white;">
+            <div id="score-persona1">Persona 1: 0</div>
+            <div id="score-persona2">Persona 2: 0</div>
+        </div>
+        <div id="victory-message" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; color: yellow; display: none; text-align: center;">
+            VICTORIA
+        </div>
+    </main>
+    <script>
+        let scorePersona1 = 0;
+        let scorePersona2 = 0;
+
+        function shootBullet(pistol, direction) {
+            const bullet = document.createElement('div');
+            bullet.style.position = 'absolute';
+            bullet.style.width = '10px';
+            bullet.style.height = '10px';
+            bullet.style.backgroundColor = 'yellow';
+            bullet.style.borderRadius = '50%';
+
+            const rect = pistol.getBoundingClientRect();
+            bullet.style.left = `${rect.left + (direction > 0 ? rect.width : 0)}px`;
+            bullet.style.top = `${rect.top + rect.height / 2}px`;
+
+            document.body.appendChild(bullet);
+
+            const interval = setInterval(() => {
+                const currentLeft = parseInt(bullet.style.left);
+                bullet.style.left = `${currentLeft + direction}px`;
+
+                // Check collision with Persona 1 and Persona 2
+                const persona1 = document.querySelector('img[alt="Persona 1"]').parentElement;
+                const persona2 = document.querySelector('img[alt="Persona 2"]').parentElement;
+
+                if (checkCollision(bullet, persona1) && direction < 0) {
+                    respawnPersona(persona1, 'yellow');
+                    bullet.remove();
+                    clearInterval(interval);
+                    scorePersona2++; // Persona 2 scores
+                    updateScores();
+                    if (scorePersona2 === 5) {
+                        rainConfetti('blue');
+                        showVictoryMessage();
+                    }
+                } else if (checkCollision(bullet, persona2) && direction > 0) {
+                    respawnPersona(persona2, 'blue');
+                    bullet.remove();
+                    clearInterval(interval);
+                    scorePersona1++; // Persona 1 scores
+                    updateScores();
+                    if (scorePersona1 === 5) {
+                        rainConfetti('yellow');
+                        showVictoryMessage();
+                    }
+                }
+
+                if (currentLeft > window.innerWidth || currentLeft < 0) {
+                    bullet.remove();
+                    clearInterval(interval);
+                }
+            }, 20);
+        }
+
+        function rainConfetti(color) {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = color;
+                confetti.style.left = `${Math.random() * window.innerWidth}px`;
+                confetti.style.top = `-10px`;
+                confetti.style.opacity = Math.random();
+
+                document.body.appendChild(confetti);
+
+                const fallInterval = setInterval(() => {
+                    const currentTop = parseInt(confetti.style.top);
+                    confetti.style.top = `${currentTop + 5}px`;
+
+                    if (currentTop > window.innerHeight) {
+                        confetti.remove();
+                        clearInterval(fallInterval);
+                    }
+                }, 20);
+            }
+        }
+
+        function showVictoryMessage() {
+            const victoryMessage = document.getElementById('victory-message');
+            victoryMessage.style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const pistols = document.querySelectorAll('img[alt^="Persona"]');
+            pistols.forEach((pistol, index) => {
+                const direction = index === 0 ? 5 : -5; // Persona 1 shoots right, Persona 2 shoots left
+                setInterval(() => shootBullet(pistol, direction), 2000); // Shoot every 2 seconds
+            });
+
+            // Movement for Persona 1
+            const persona1 = document.querySelector('img[alt="Persona 1"]').parentElement;
+            persona1.style.position = 'absolute';
+            persona1.style.left = '20%';
+            persona1.style.top = '50%';
+
+            document.addEventListener('keydown', (event) => {
+                const step = 10; // Movement step in pixels
+                const currentLeft1 = parseInt(persona1.style.left);
+                const currentTop1 = parseInt(persona1.style.top);
+
+                switch (event.key) {
+                    case 'w': // Move up
+                        persona1.style.top = `${currentTop1 - step}px`;
+                        break;
+                    case 's': // Move down
+                        persona1.style.top = `${currentTop1 + step}px`;
+                        break;
+                    case 'a': // Move left
+                        persona1.style.left = `${currentLeft1 - step}px`;
+                        break;
+                    case 'd': // Move right
+                        persona1.style.left = `${currentLeft1 + step}px`;
+                        break;
+                }
+            });
+
+            // Movement for Persona 2
+            const persona2 = document.querySelector('img[alt="Persona 2"]').parentElement;
+            persona2.style.position = 'absolute';
+            persona2.style.left = '50%';
+            persona2.style.top = '50%';
+
+            document.addEventListener('keydown', (event) => {
+                const step = 10; // Movement step in pixels
+                const currentLeft2 = parseInt(persona2.style.left);
+                const currentTop2 = parseInt(persona2.style.top);
+
+                switch (event.key) {
+                    case 'ArrowUp':
+                        persona2.style.top = `${currentTop2 - step}px`;
+                        break;
+                    case 'ArrowDown':
+                        persona2.style.top = `${currentTop2 + step}px`;
+                        break;
+                    case 'ArrowLeft':
+                        persona2.style.left = `${currentLeft2 - step}px`;
+                        break;
+                    case 'ArrowRight':
+                        persona2.style.left = `${currentLeft2 + step}px`;
+                        break;
+                }
+            });
+        });
+
+        function checkCollision(object, person) {
+            const bulletRect = object.getBoundingClientRect();
+            const personRect = person.getBoundingClientRect();
+
+            return !(
+                bulletRect.right < personRect.left ||
+                bulletRect.left > personRect.right ||
+                bulletRect.bottom < personRect.top ||
+                bulletRect.top > personRect.bottom
+            );
+        }
+
+        function updateScores() {
+            document.getElementById('score-persona1').textContent = `Persona 1: ${scorePersona1}`;
+            document.getElementById('score-persona2').textContent = `Persona 2: ${scorePersona2}`;
+        }
+
+        function respawnPersona(persona, circleColor) {
+            const circle = document.querySelector(`div[style*="background-color: ${circleColor}"]`);
+            const circleRect = circle.getBoundingClientRect();
+
+            persona.style.position = 'absolute';
+            persona.style.left = `${circleRect.left}px`;
+            persona.style.top = `${circleRect.top}px`;
+
+            document.body.appendChild(persona); // Re-add the person to the DOM if removed
+        }
+    </script>
+</body>
+</html>

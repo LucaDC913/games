@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuadrado Azul con Ojos</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: blue; /* Fondo azul */
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            background: lightblue; /* Color azul claro */
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .eye {
+            width: 20px;
+            height: 20px;
+            background: yellow; /* Color amarillo */
+            border-radius: 50%; /* Forma circular */
+            position: absolute;
+            top: 25%; /* Posición vertical */
+        }
+
+        .eye.left {
+            left: 20%; /* Ojo izquierdo */
+        }
+
+        .eye.right {
+            right: 20%; /* Ojo derecho */
+        }
+
+        .obstacle {
+            width: 50px;
+            height: 50px;
+            background: black; /* Color negro */
+            position: absolute;
+        }
+
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%; /* Forma circular */
+            position: absolute;
+        }
+
+        .circle.green {
+            background: green; /* Color verde */
+            top: 50%; /* Centrado vertical */
+            right: 50px; /* Posicionado a la derecha */
+            transform: translateY(-50%); /* Ajuste para centrar */
+        }
+
+        .circle.red {
+            background: red; /* Color rojo */
+            top: 50%; /* Centrado vertical */
+            left: 50px; /* Posicionado a la izquierda */
+            transform: translateY(-50%); /* Ajuste para centrar */
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: red; /* Color inicial */
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: white;
+            display: none; /* Ocultar inicialmente */
+        }
+    </style>
+</head>
+<body>
+    <div class="square" id="square">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+    </div>
+
+    <!-- Obstáculos -->
+    <div class="obstacle" style="top: 50px; left: 100px;"></div>
+    <div class="obstacle" style="top: 150px; left: 300px;"></div>
+    <div class="obstacle" style="top: 250px; left: 500px;"></div>
+    <div class="obstacle" style="top: 350px; left: 700px;"></div>
+    <div class="obstacle" style="top: 450px; left: 200px;"></div>
+    <div class="obstacle" style="top: 550px; left: 400px;"></div>
+    <div class="obstacle" style="top: 650px; left: 600px;"></div>
+    <div class="obstacle" style="top: 100px; left: 800px;"></div>
+    <div class="obstacle" style="top: 300px; left: 900px;"></div>
+    <div class="obstacle" style="top: 500px; left: 1000px;"></div>
+    <div class="obstacle" style="top: 200px; left: 1200px;"></div>
+    <div class="obstacle" style="top: 400px; left: 1400px;"></div>
+    <div class="obstacle" style="top: 600px; left: 1600px;"></div>
+    <!-- Additional obstacles -->
+    <div class="obstacle" style="top: 50px; left: 50px;"></div>
+    <div class="obstacle" style="top: 300px; left: 200px;"></div>
+    <div class="obstacle" style="top: 400px; left: 800px;"></div>
+    <div class="obstacle" style="top: 600px; left: 100px;"></div>
+    <div class="obstacle" style="top: 700px; left: 500px;"></div>
+    <div class="obstacle" style="top: 800px; left: 300px;"></div>
+    <div class="obstacle" style="top: 900px; left: 700px;"></div>
+
+    <!-- Círculo verde -->
+    <div class="circle green" id="circle-green"></div>
+
+    <!-- Círculo rojo -->
+    <div class="circle red" id="circle-red"></div>
+
+    <!-- Mensaje de "Escapaste" -->
+    <div class="message" id="message">¡Escapaste!</div>
+
+    <script>
+        const square = document.getElementById("square");
+        const circleGreen = document.getElementById("circle-green");
+        const circleRed = document.getElementById("circle-red");
+        const message = document.getElementById("message");
+        const obstacles = document.querySelectorAll(".obstacle");
+        let x = 100; // Posición inicial en X
+        let y = 100; // Posición inicial en Y
+        const step = 10; // Cantidad de píxeles que se mueve el cuadrado
+
+        // Función para verificar colisión con el círculo verde
+        function checkCircleCollision() {
+            const squareRect = square.getBoundingClientRect();
+            const circleRect = circleGreen.getBoundingClientRect();
+
+            if (
+                squareRect.left < circleRect.right &&
+                squareRect.right > circleRect.left &&
+                squareRect.top < circleRect.bottom &&
+                squareRect.bottom > circleRect.top
+            ) {
+                // No hacer nada al tocar el círculo verde
+            }
+        }
+
+        // Función para verificar colisión con el círculo rojo
+        function checkRedCircleCollision() {
+            const squareRect = square.getBoundingClientRect();
+            const circleRect = circleRed.getBoundingClientRect();
+
+            if (
+                squareRect.left < circleRect.right &&
+                squareRect.right > circleRect.left &&
+                squareRect.top < circleRect.bottom &&
+                squareRect.bottom > circleRect.top
+            ) {
+                showEscapeMessage(); // Mostrar mensaje de "Escapaste"
+                startConfetti(); // Iniciar lluvia de papelitos
+            }
+        }
+
+        // Función para mostrar el mensaje de "Escapaste"
+        function showEscapeMessage() {
+            message.style.display = "block"; // Mostrar el mensaje
+        }
+
+        // Función para iniciar la lluvia de papelitos
+        function startConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                confetti.style.left = Math.random() * window.innerWidth + "px";
+                confetti.style.background =
+                    "hsl(" + Math.random() * 360 + ", 100%, 50%)"; // Colores aleatorios
+                document.body.appendChild(confetti);
+
+                // Eliminar el confetti después de la animación
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+
+        // Función para verificar colisión con los obstáculos negros
+        function checkObstacleCollision() {
+            const squareRect = square.getBoundingClientRect();
+
+            for (const obstacle of obstacles) {
+                const obstacleRect = obstacle.getBoundingClientRect();
+
+                if (
+                    squareRect.left < obstacleRect.right &&
+                    squareRect.right > obstacleRect.left &&
+                    squareRect.top < obstacleRect.bottom &&
+                    squareRect.bottom > obstacleRect.top
+                ) {
+                    // Si hay colisión, "morir" y reaparecer en el círculo verde
+                    respawn();
+                    break;
+                }
+            }
+        }
+
+        // Función para reaparecer en el círculo verde
+        function respawn() {
+            const circleRect = circleGreen.getBoundingClientRect(); // Cambiar al círculo verde
+            x = circleRect.left + circleRect.width / 2 - 50; // Centrar el cuadrado en el círculo
+            y = circleRect.top + circleRect.height / 2 - 50; // Centrar el cuadrado en el círculo
+            square.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        // Función para mover el cuadrado
+        function moveSquare(event) {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const squareWidth = square.offsetWidth;
+            const squareHeight = square.offsetHeight;
+
+            // Detectar la tecla presionada
+            switch (event.key) {
+                case "ArrowUp":
+                    if (y > 0) y -= step; // Mover hacia arriba
+                    break;
+                case "ArrowDown":
+                    if (y + squareHeight < windowHeight) y += step; // Mover hacia abajo
+                    break;
+                case "ArrowLeft":
+                    if (x > 0) x -= step; // Mover hacia la izquierda
+                    break;
+                case "ArrowRight":
+                    if (x + squareWidth < windowWidth) x += step; // Mover hacia la derecha
+                    break;
+            }
+
+            // Aplicar nueva posición
+            square.style.transform = `translate(${x}px, ${y}px)`;
+
+            // Verificar colisión con el círculo verde
+            checkCircleCollision();
+
+            // Verificar colisión con el círculo rojo
+            checkRedCircleCollision();
+
+            // Verificar colisión con los obstáculos negros
+            checkObstacleCollision();
+        }
+
+        // Escuchar eventos de teclado
+        window.addEventListener("keydown", moveSquare);
+    </script>
+</body>
+</html>

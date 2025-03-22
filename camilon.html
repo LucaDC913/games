@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camilon</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000; /* Fondo negro */
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .moving-text {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fff;
+            position: absolute;
+        }
+
+        .dancing-monkey {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            background: url('mono.gif') no-repeat center center;
+            background-size: contain;
+            animation: dance 1s infinite alternate;
+        }
+
+        @keyframes dance {
+            0% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+            100% {
+                transform: translateX(-50%) rotate(10deg);
+            }
+        }
+
+        /* Papelitos de colores */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: red;
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Generar más papelitos */
+        .confetti:nth-child(1) { left: 5%; background: red; animation-delay: 0s; }
+        .confetti:nth-child(2) { left: 10%; background: blue; animation-delay: 0.5s; }
+        .confetti:nth-child(3) { left: 15%; background: yellow; animation-delay: 1s; }
+        .confetti:nth-child(4) { left: 20%; background: green; animation-delay: 1.5s; }
+        .confetti:nth-child(5) { left: 25%; background: purple; animation-delay: 2s; }
+        .confetti:nth-child(6) { left: 30%; background: orange; animation-delay: 2.5s; }
+        .confetti:nth-child(7) { left: 35%; background: pink; animation-delay: 3s; }
+        .confetti:nth-child(8) { left: 40%; background: cyan; animation-delay: 3.5s; }
+        .confetti:nth-child(9) { left: 45%; background: lime; animation-delay: 4s; }
+        .confetti:nth-child(10) { left: 50%; background: red; animation-delay: 4.5s; }
+        .confetti:nth-child(11) { left: 55%; background: blue; animation-delay: 5s; }
+        .confetti:nth-child(12) { left: 60%; background: yellow; animation-delay: 5.5s; }
+        .confetti:nth-child(13) { left: 65%; background: green; animation-delay: 6s; }
+        .confetti:nth-child(14) { left: 70%; background: purple; animation-delay: 6.5s; }
+        .confetti:nth-child(15) { left: 75%; background: orange; animation-delay: 7s; }
+        .confetti:nth-child(16) { left: 80%; background: pink; animation-delay: 7.5s; }
+        .confetti:nth-child(17) { left: 85%; background: cyan; animation-delay: 8s; }
+        .confetti:nth-child(18) { left: 90%; background: lime; animation-delay: 8.5s; }
+
+        /* Nieve */
+        .snowflake {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowFall 5s linear infinite;
+        }
+
+        @keyframes snowFall {
+            0% {
+                transform: translateY(-10vh) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(20px);
+                opacity: 0.5;
+            }
+        }
+
+        /* Generar múltiples copos de nieve */
+        .snowflake:nth-child(1) { left: 5%; animation-delay: 0s; }
+        .snowflake:nth-child(2) { left: 15%; animation-delay: 1s; }
+        .snowflake:nth-child(3) { left: 25%; animation-delay: 2s; }
+        .snowflake:nth-child(4) { left: 35%; animation-delay: 3s; }
+        .snowflake:nth-child(5) { left: 45%; animation-delay: 4s; }
+        .snowflake:nth-child(6) { left: 55%; animation-delay: 0.5s; }
+        .snowflake:nth-child(7) { left: 65%; animation-delay: 1.5s; }
+        .snowflake:nth-child(8) { left: 75%; animation-delay: 2.5s; }
+        .snowflake:nth-child(9) { left: 85%; animation-delay: 3.5s; }
+        .snowflake:nth-child(10) { left: 95%; animation-delay: 4.5s; }
+    </style>
+</head>
+<body>
+    <div class="moving-text" id="text">Camilon</div>
+    <div class="dancing-monkey"></div>
+
+    <!-- Papelitos de colores -->
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+    <div class="confetti"></div>
+
+    <!-- Nieve -->
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+
+    <script>
+        const text = document.getElementById("text");
+        let x = 100; // Posición inicial en X
+        let y = 100; // Posición inicial en Y
+        let dx = 2; // Velocidad en X
+        let dy = 2; // Velocidad en Y
+
+        function moveText() {
+            const textWidth = text.offsetWidth;
+            const textHeight = text.offsetHeight;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Cambiar dirección si toca los bordes
+            if (x + textWidth >= windowWidth || x <= 0) {
+                dx = -dx;
+            }
+            if (y + textHeight >= windowHeight || y <= 0) {
+                dy = -dy;
+            }
+
+            // Actualizar posición
+            x += dx;
+            y += dy;
+
+            // Aplicar nueva posición
+            text.style.transform = `translate(${x}px, ${y}px)`;
+
+            // Llamar a la función nuevamente
+            requestAnimationFrame(moveText);
+        }
+
+        // Iniciar el movimiento
+        moveText();
+    </script>
+</body>
+</html>
