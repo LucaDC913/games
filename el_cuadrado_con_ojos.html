@@ -15,30 +15,13 @@
         }
 
         .square {
-            width: 100px;
-            height: 100px;
+            width: 50px; /* Tamaño reducido */
+            height: 50px; /* Tamaño reducido */
             background: lightblue; /* Color azul claro */
             position: absolute;
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        .eye {
-            width: 20px;
-            height: 20px;
-            background: yellow; /* Color amarillo */
-            border-radius: 50%; /* Forma circular */
-            position: absolute;
-            top: 25%; /* Posición vertical */
-        }
-
-        .eye.left {
-            left: 20%; /* Ojo izquierdo */
-        }
-
-        .eye.right {
-            right: 20%; /* Ojo derecho */
         }
 
         .obstacle {
@@ -108,6 +91,36 @@
             left: 70%; /* Posición horizontal */
             transform: translate(-50%, -50%); /* Centrado relativo */
         }
+
+        .circle.red-with-eyes {
+            width: 30px; /* Tamaño pequeño */
+            height: 30px;
+            border-radius: 50%; /* Forma circular */
+            background: red; /* Color rojo */
+            position: absolute;
+            top: 70%; /* Posición vertical */
+            left: 70%; /* Posición horizontal */
+            transform: translate(-50%, -50%); /* Centrado relativo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle.red-with-eyes .eye {
+            width: 5px; /* Tamaño del ojo */
+            height: 5px;
+            background: black; /* Color negro */
+            border-radius: 50%; /* Forma circular */
+            position: absolute;
+        }
+
+        .circle.red-with-eyes .eye.left {
+            left: 8px; /* Posición del ojo izquierdo */
+        }
+
+        .circle.red-with-eyes .eye.right {
+            right: 8px; /* Posición del ojo derecho */
+        }
     </style>
 </head>
 <body>
@@ -126,7 +139,7 @@
     <div class="obstacle" style="top: 650px; left: 600px;"></div>
     <div class="obstacle" style="top: 100px; left: 800px;"></div>
     <div class="obstacle" style="top: 300px; left: 900px;"></div>
-    <div class="obstacle" style="top: 500px; left: 1000px;"></div>
+    <!-- Eliminados tres obstáculos -->
     <div class="obstacle" style="top: 200px; left: 1200px;"></div>
     <div class="obstacle" style="top: 400px; left: 1400px;"></div>
     <div class="obstacle" style="top: 600px; left: 1600px;"></div>
@@ -138,6 +151,30 @@
     <div class="obstacle" style="top: 700px; left: 500px;"></div>
     <div class="obstacle" style="top: 800px; left: 300px;"></div>
     <div class="obstacle" style="top: 900px; left: 700px;"></div>
+
+    <!-- Obstáculos adicionales -->
+    <div class="obstacle" style="top: 50px; left: 50px;"></div>
+    <div class="obstacle" style="top: 200px; left: 150px;"></div>
+    <div class="obstacle" style="top: 400px; left: 300px;"></div>
+    <div class="obstacle" style="top: 600px; left: 500px;"></div>
+    <div class="obstacle" style="top: 800px; left: 700px;"></div>
+    <div class="obstacle" style="top: 100px; left: 900px;"></div>
+    <div class="obstacle" style="top: 300px; left: 1100px;"></div>
+    <div class="obstacle" style="top: 500px; left: 1300px;"></div>
+    <div class="obstacle" style="top: 700px; left: 1500px;"></div>
+    <div class="obstacle" style="top: 900px; left: 1700px;"></div>
+
+    <!-- Obstáculos adicionales -->
+    <div class="obstacle" style="top: 50px; left: 50px;"></div>
+    <div class="obstacle" style="top: 150px; left: 250px;"></div>
+    <div class="obstacle" style="top: 300px; left: 450px;"></div>
+    <div class="obstacle" style="top: 450px; left: 650px;"></div>
+    <div class="obstacle" style="top: 600px; left: 850px;"></div>
+    <div class="obstacle" style="top: 750px; left: 1050px;"></div>
+    <div class="obstacle" style="top: 900px; left: 1250px;"></div>
+    <div class="obstacle" style="top: 200px; left: 150px;"></div>
+    <div class="obstacle" style="top: 400px; left: 350px;"></div>
+    <div class="obstacle" style="top: 600px; left: 550px;"></div>
 
     <!-- Círculo verde -->
     <div class="circle green" id="circle-green"></div>
@@ -151,12 +188,16 @@
     <!-- Mensaje de "Escapaste" -->
     <div class="message" id="message">¡Escapaste!</div>
 
+    <!-- Botón para jugar de vuelta -->
+    <button id="restart-button" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px 20px; font-size: 20px;">Jugar de vuelta</button>
+
     <script>
         const square = document.getElementById("square");
         const circleGreen = document.getElementById("circle-green");
         const circleRed = document.getElementById("circle-red");
         const message = document.getElementById("message");
         const obstacles = document.querySelectorAll(".obstacle");
+        const restartButton = document.getElementById("restart-button"); // Referencia al botón
         let x = 100; // Posición inicial en X
         let y = 100; // Posición inicial en Y
         const step = 10; // Cantidad de píxeles que se mueve el cuadrado
@@ -187,9 +228,34 @@
                 squareRect.top < circleRect.bottom &&
                 squareRect.bottom > circleRect.top
             ) {
-                showEscapeMessage(); // Mostrar mensaje de "Escapaste"
-                startConfetti(); // Iniciar lluvia de papelitos
+                whiteCircleMoving = false; // Detener el movimiento del círculo blanco
+                showWinMessage(); // Mostrar el mensaje de "¡Ganaste!"
             }
+        }
+
+        // Función para mostrar el mensaje de "¡Ganaste!"
+        function showWinMessage() {
+            message.textContent = "¡Ganaste!"; // Cambiar el texto del mensaje
+            message.style.display = "block"; // Mostrar el mensaje
+
+            // Mostrar el botón después de un breve retraso
+            setTimeout(() => {
+                showRestartButton();
+            }, 2000); // 2 segundos de retraso
+        }
+
+        // Función para mostrar el botón de "Jugar de vuelta"
+        function showRestartButton() {
+            restartButton.style.display = "block"; // Mostrar el botón
+            restartButton.addEventListener("click", restartGame); // Agregar evento al botón
+        }
+
+        // Función para reiniciar el juego
+        function restartGame() {
+            restartButton.style.display = "none"; // Ocultar el botón
+            message.style.display = "none"; // Ocultar el mensaje
+            whiteCircleMoving = true; // Reactivar el movimiento del círculo blanco
+            respawn(); // Reaparecer en el círculo verde
         }
 
         // Función para mostrar el mensaje de "Escapaste"
@@ -280,15 +346,23 @@
 
         // Escuchar eventos de teclado
         window.addEventListener("keydown", moveSquare);
+        
+        // Llamar a respawn() al cargar el juego
+        window.onload = () => {
+            respawn();
+        };
     </script>
     <script>
         const circleWhite = document.getElementById("circle-white");
+        let whiteCircleMoving = true; // Variable de control para el movimiento del círculo blanco
 
         // Velocidad del círculo blanco
         const whiteCircleSpeed = 2;
 
         // Función para mover el círculo blanco hacia el cuadrado
         function moveWhiteCircle() {
+            if (!whiteCircleMoving) return; // Detener el movimiento si está desactivado
+
             const squareRect = square.getBoundingClientRect();
             const circleWhiteRect = circleWhite.getBoundingClientRect();
 
