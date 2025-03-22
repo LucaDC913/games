@@ -97,6 +97,17 @@
             color: white;
             display: none; /* Ocultar inicialmente */
         }
+
+        .circle.white {
+            width: 30px; /* Tamaño pequeño */
+            height: 30px;
+            border-radius: 50%; /* Forma circular */
+            background: white; /* Color blanco */
+            position: absolute;
+            top: 70%; /* Posición vertical */
+            left: 70%; /* Posición horizontal */
+            transform: translate(-50%, -50%); /* Centrado relativo */
+        }
     </style>
 </head>
 <body>
@@ -133,6 +144,9 @@
 
     <!-- Círculo rojo -->
     <div class="circle red" id="circle-red"></div>
+
+    <!-- Círculo blanco pequeño -->
+    <div class="circle white" id="circle-white"></div>
 
     <!-- Mensaje de "Escapaste" -->
     <div class="message" id="message">¡Escapaste!</div>
@@ -266,6 +280,58 @@
 
         // Escuchar eventos de teclado
         window.addEventListener("keydown", moveSquare);
+    </script>
+    <script>
+        const circleWhite = document.getElementById("circle-white");
+
+        // Velocidad del círculo blanco
+        const whiteCircleSpeed = 2;
+
+        // Función para mover el círculo blanco hacia el cuadrado
+        function moveWhiteCircle() {
+            const squareRect = square.getBoundingClientRect();
+            const circleWhiteRect = circleWhite.getBoundingClientRect();
+
+            // Calcular la dirección hacia el cuadrado
+            const dx = squareRect.left + squareRect.width / 2 - (circleWhiteRect.left + circleWhiteRect.width / 2);
+            const dy = squareRect.top + squareRect.height / 2 - (circleWhiteRect.top + circleWhiteRect.height / 2);
+
+            // Calcular la distancia
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Normalizar la dirección y mover el círculo blanco
+            if (distance > 1) {
+                const moveX = (dx / distance) * whiteCircleSpeed;
+                const moveY = (dy / distance) * whiteCircleSpeed;
+
+                const currentX = parseFloat(circleWhite.style.left || circleWhiteRect.left) + moveX;
+                const currentY = parseFloat(circleWhite.style.top || circleWhiteRect.top) + moveY;
+
+                circleWhite.style.left = currentX + "px";
+                circleWhite.style.top = currentY + "px";
+            }
+
+            // Verificar colisión con el cuadrado
+            checkWhiteCircleCollision();
+        }
+
+        // Función para verificar colisión con el círculo blanco
+        function checkWhiteCircleCollision() {
+            const squareRect = square.getBoundingClientRect();
+            const circleWhiteRect = circleWhite.getBoundingClientRect();
+
+            if (
+                squareRect.left < circleWhiteRect.right &&
+                squareRect.right > circleWhiteRect.left &&
+                squareRect.top < circleWhiteRect.bottom &&
+                squareRect.bottom > circleWhiteRect.top
+            ) {
+                respawn(); // Reaparecer en el círculo verde
+            }
+        }
+
+        // Iniciar el movimiento del círculo blanco
+        setInterval(moveWhiteCircle, 20);
     </script>
 </body>
 </html>
